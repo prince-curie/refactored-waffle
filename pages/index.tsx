@@ -1,84 +1,89 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
+import { useState, useEffect, useRef } from 'react'
+import Web3Modal from "web3modal"
+import WalletConnectProvider from '@walletconnect/web3-provider'
+import { injectStyle } from 'react-toastify/dist/inject-style'
+import Header from '../components/Header'
+import iWeb3Modal from '../interfaces/iWeb3Modal'
+import { Web3ModalProvider } from '../context/web3ModalContext'
+import Footer from '../components/Footer'
 
 const Home: NextPage = () => {
+  
+  const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false)
+  const [walletAddress, setWalletAddress] = useState<string>("")
+  const [owner, setOwnner] = useState<string>("")
+  const [amount, setAmount] = useState<number>()
+
+  const web3ModalRef = useRef<iWeb3Modal | null>(null)
+
+  const buyToken = () => {
+
+  }
+
+  const sellToken = () => {
+    
+  }
+
+  useEffect(() => {
+    web3ModalRef.current = new Web3Modal({
+      // network: "rinkeby",
+      cacheProvider: true,
+      providerOptions: {
+        walletconnect: {
+          package: WalletConnectProvider,
+          options: {
+            infuraId: process.env.NEXT_PUBLIC_INFURAID
+          }
+        }
+      }
+    })
+
+    injectStyle()
+  }, [isWalletConnected])
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-2">
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <div className="flex min-h-screen flex-col md:justify-center md:items-center py-2">
+      <Web3ModalProvider value={web3ModalRef}>
+        <Head>
+          <title>Zazoo</title>
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
 
-      <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
-          </a>
-        </h1>
+        <main className="flex w-full flex-1 flex-col px-20">
+          <Header 
+            isWalletConnected = {isWalletConnected} 
+            setIsWalletConnected = {setIsWalletConnected}
+            walletAddress = {walletAddress} 
+            setWalletAddress = {setWalletAddress}
+            owner = {owner} 
+            setOwnner = {setOwnner}
+          />
+          <p className="mt-5 sm:mt-24 text-2xl text-center">
+            Zazoo is your one-stop hub for all your favourite products and services.
+          </p>
 
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="rounded-md bg-gray-100 p-3 font-mono text-lg">
-            pages/index.tsx
-          </code>
-        </p>
+          {isWalletConnected && 
+            <>
+              <form className='flex my-8 mx-auto flex-col border-l-black rounded-md w-10/12 sm:w-8/12 md:w-6/12 lg:w-4/12'>
+                <label htmlFor="Input Amount of Token" className='mt-4'>Amount</label>
+                <input className='border-1' required type="number" id="amount" value={amount} onChange={(e) => setAmount(Number(e.target.value))}></input>
 
-        <div className="mt-6 flex max-w-4xl flex-wrap items-center justify-around sm:w-full">
-          <a
-            href="https://nextjs.org/docs"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and its API.
-            </p>
-          </a>
+                <button type="button" disabled={!amount? true : false} onClick={buyToken}
+                  className='mt-4 rounded-md ring-2 ring-inset-1 ring-sky-600 px-2 bg-sky-100 hover:bg-sky-600 hover:text-white'
+                >Buy Token</button>
+                <button type="button" disabled={!amount? true : false} onClick={sellToken}
+                  className='mt-4 rounded-md ring-2 ring-inset-1 ring-sky-600 px-2 bg-sky-100 hover:bg-sky-600 hover:text-white'
+                >Sell Token</button>
+              </form>
+            </>
+          }
+        </main>
 
-          <a
-            href="https://nextjs.org/learn"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className="flex h-24 w-full items-center justify-center border-t">
-        <a
-          className="flex items-center justify-center gap-2"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-        </a>
-      </footer>
+        <Footer />
+      </ Web3ModalProvider>
     </div>
   )
 }
