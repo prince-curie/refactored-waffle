@@ -29,7 +29,7 @@ const Home: NextPage = () => {
   }
 
   const getOwner = () => {
-    
+
   }
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const Home: NextPage = () => {
         walletconnect: {
           package: WalletConnectProvider,
           options: {
-            infuraId: process.env.NEXT_PUBLIC_INFURAID
+            infuraId: "f143c0812f534156bb33e416ecd70988"
           }
         }
       }
