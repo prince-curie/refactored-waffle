@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useContext, useState } from "react"
 import web3ModalContext from "../context/web3ModalContext"
 import iWeb3Modal from "../interfaces/iWeb3Modal"
 import { truncateWalletAddress } from '../helpers'
+import Link from 'next/link'
 
 interface IHeaderProps {
   isWalletConnected: boolean, 
@@ -60,9 +61,15 @@ const Header = ({
     <>
       <ToastContainer />
       <div className='flex justify-center sm:justify-between md:items-center flex-wrap'>
-        <h1 className="text-6xl font-bold text-sky-600">
-          Zazoo
-        </h1>
+        <div className='flex items-end'>
+          <Link href="/">
+            <a className="text-6xl font-bold text-sky-600">Zazoo</a>
+          </Link>
+          { (isWalletConnected && walletAddress == owner) && <Link href="/dashboard">
+              <a className='text-xl font-bold'>dashboard</a>
+            </Link>
+          }
+        </div>
         {!isWalletConnected ? 
             <div className='flex sm:inline-flex justify-center w-full sm:w-fit items-center flex-wrap mt-2 sm:mt-0'>
               <button onClick={connectWallet}

@@ -28,6 +28,10 @@ const Home: NextPage = () => {
     
   }
 
+  const getOwner = () => {
+    
+  }
+
   useEffect(() => {
     web3ModalRef.current = new Web3Modal({
       // network: "rinkeby",
