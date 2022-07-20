@@ -9,6 +9,7 @@ import Header from '../components/Header'
 import iWeb3Modal from '../interfaces/iWeb3Modal'
 import { Web3ModalProvider } from '../context/web3ModalContext'
 import Footer from '../components/Footer'
+import Vendor from '../components/Vendor'
 
 const Home: NextPage = () => {
   
@@ -69,7 +70,7 @@ const Home: NextPage = () => {
             <>
               <form className='flex my-8 mx-auto flex-col border-l-black rounded-md w-10/12 sm:w-8/12 md:w-6/12 lg:w-4/12'>
                 <label htmlFor="Input Amount of Token" className='mt-4'>Amount</label>
-                <input className='border-1' required type="number" id="amount" value={amount} onChange={(e) => setAmount(Number(e.target.value))}></input>
+                <input className='border-2 rounded-md border-black' required type="number" id="amount" value={amount} onChange={(e) => setAmount(Number(e.target.value))}></input>
 
                 <button type="button" disabled={!amount? true : false} onClick={buyToken}
                   className='mt-4 rounded-md ring-2 ring-inset-1 ring-sky-600 px-2 bg-sky-100 hover:bg-sky-600 hover:text-white'
@@ -78,6 +79,7 @@ const Home: NextPage = () => {
                   className='mt-4 rounded-md ring-2 ring-inset-1 ring-sky-600 px-2 bg-sky-100 hover:bg-sky-600 hover:text-white'
                 >Sell Token</button>
               </form>
+              <Vendor isWalletConnected={isWalletConnected}/>
             </>
           }
         </main>
