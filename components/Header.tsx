@@ -63,7 +63,7 @@ const Header = ({
       <div className='flex justify-center sm:justify-between md:items-center flex-wrap'>
         <div className='flex items-end'>
           <Link href="/">
-            <a className="text-6xl font-bold text-sky-600">Zazoo</a>
+            <a className="text-6xl font-bold text-sky-600">Rarible</a>
           </Link>
           { (isWalletConnected && walletAddress == owner) && <Link href="/dashboard">
               <a className='text-xl font-bold'>dashboard</a>
