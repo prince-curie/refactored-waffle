@@ -40,7 +40,7 @@ const Home: NextPage = () => {
         walletconnect: {
           package: WalletConnectProvider,
           options: {
-            infuraId: "f143c0812f534156bb33e416ecd70988"
+            infuraId: process.env.NEXT_PUBLIC_INFURAID // "f143c0812f534156bb33e416ecd70988"
           }
         }
       }

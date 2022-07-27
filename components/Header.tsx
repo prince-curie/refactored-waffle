@@ -32,7 +32,7 @@ const Header = ({
   
         const network:ethers.providers.Network = await provider.getNetwork()
   
-        if(network.name === 'rinkeby') {
+        if(network.name === process.env.NEXT_PUBLIC_NETWORK) {
           setIsWalletConnected(true)
           setWalletAddress(address)
   
