@@ -10,6 +10,9 @@ import iWeb3Modal from '../interfaces/iWeb3Modal'
 import { Web3ModalProvider } from '../context/web3ModalContext'
 import Footer from '../components/Footer'
 import Vendor from '../components/Vendor'
+import { Contract, ethers } from 'ethers'
+import { abi, contractAddress } from '../constants'
+import { toast } from 'react-toastify'
 
 const Home: NextPage = () => {
   
@@ -20,16 +23,42 @@ const Home: NextPage = () => {
 
   const web3ModalRef = useRef<iWeb3Modal | null>(null)
 
-  const buyToken = () => {
+  const buyToken = async() => {
+    try {
+      if(web3ModalRef) {
+        const instance = await web3ModalRef?.current?.connect()
+  
+        const provider: ethers.providers.Web3Provider = new ethers.providers.Web3Provider(instance);
+        const signer: ethers.providers.JsonRpcSigner = provider.getSigner()
+        
+        const contract: Contract = new Contract(contractAddress, abi, signer)
+  
+        await contract.buyTokens({value: ethers.utils.parseEther(`${amount}`)})
 
+        contract.on("BuyTokens", () => toast.success(`${amount} TAN has been bought successfully.`))        
+      }
+    } catch (error: any) {
+      toast.error("Unable to buy token at the moment.")
+    }
   }
 
-  const sellToken = () => {
-    
-  }
-
-  const getOwner = () => {
-
+  const sellToken = async(quantity: number|undefined) => {
+    try {
+      if(web3ModalRef) {
+        const instance = await web3ModalRef?.current?.connect()
+  
+        const provider: ethers.providers.Web3Provider = new ethers.providers.Web3Provider(instance);
+        const signer: ethers.providers.JsonRpcSigner = provider.getSigner()
+        
+        const contract: Contract = new Contract(contractAddress, abi, signer)
+  
+        await contract.sellTokens(ethers.utils.parseEther(`${quantity}`))
+  
+        contract.on("SellTokens", () => toast.success(`${quantity} TAN has been sold successfully.`))
+      }
+    } catch (error: any) {
+      toast.error("Unable to sell token at the moment.")
+    }
   }
 
   useEffect(() => {
@@ -79,7 +108,7 @@ const Home: NextPage = () => {
                 <button type="button" disabled={!amount? true : false} onClick={buyToken}
                   className='mt-4 rounded-md ring-2 ring-inset-1 ring-sky-600 px-2 bg-sky-100 hover:bg-sky-600 hover:text-white'
                 >Buy Token</button>
-                <button type="button" disabled={!amount? true : false} onClick={sellToken}
+                <button type="button" disabled={!amount? true : false} onClick={() => sellToken(amount)}
                   className='mt-4 rounded-md ring-2 ring-inset-1 ring-sky-600 px-2 bg-sky-100 hover:bg-sky-600 hover:text-white'
                 >Sell Token</button>
               </form>

@@ -11,12 +11,13 @@ import { Web3ModalProvider } from '../context/web3ModalContext'
 import Footer from '../components/Footer'
 import Vendor from '../components/Vendor'
 import { ToastContainer, toast } from 'react-toastify'
+import { Contract, ethers } from 'ethers'
+import { abi, contractAddress } from '../constants'
 
 const Dashboard: NextPage = () => {
     const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false)
     const [walletAddress, setWalletAddress] = useState<string>("")
     const [owner, setOwnner] = useState<string>("")
-    const [id, setId] = useState<number>()
     const [businessName, setBusinessName] = useState<string>()
     const [product, setProduct] = useState<string>("")
     const [price, setPrice] = useState<string>("")
@@ -25,12 +26,49 @@ const Dashboard: NextPage = () => {
 
     const web3ModalRef = useRef<iWeb3Modal | null>(null)
 
-    const addVendor = () => {
+    const addVendor = async() => {
+        try {
+            if(web3ModalRef) {
+              const instance = await web3ModalRef?.current?.connect()
+        
+              const provider: ethers.providers.Web3Provider = new ethers.providers.Web3Provider(instance);
+              const signer: ethers.providers.JsonRpcSigner = provider.getSigner()
+              
+              const contract: Contract = new Contract(contractAddress, abi, signer)
+        
+              let totalVendors = await contract.vendorsCount()
+              totalVendors = totalVendors.toNumber()
 
+              await contract.addVendors(
+                totalVendors + 1, 
+                businessName,
+                product,
+                ethers.utils.parseEther(price),
+                description,
+                customer
+                )
+            }
+          } catch (error: any) {
+            console.log(error)
+            toast.error("Unable to add vendor at the moment.")
+          }
     }
 
-    const withdraw = () => {
-
+    const withdraw = async() => {
+        try {
+            if(web3ModalRef) {
+              const instance = await web3ModalRef?.current?.connect()
+        
+              const provider: ethers.providers.Web3Provider = new ethers.providers.Web3Provider(instance);
+              const signer: ethers.providers.JsonRpcSigner = provider.getSigner()
+              
+              const contract: Contract = new Contract(contractAddress, abi, signer)
+        
+              await contract.withdraw()
+            }
+          } catch (error: any) {
+            toast.error("Unable to withdraw at the moment.")
+          }
     }
 
     useEffect(() => {
@@ -67,8 +105,6 @@ const Dashboard: NextPage = () => {
                     {isWalletConnected && 
                         <>
                             <form className='flex my-8 mx-auto flex-col border-l-black rounded-md w-10/12 sm:w-8/12 md:w-6/12 lg:w-4/12'>
-                                <label htmlFor="Input Id" className='mt-4'>Id</label>
-                                <input className='border-2 rounded-md border-black' required type="number" id="id" value={id} onChange={(e) => setId(Number(e.target.value))}></input>
                                 <label htmlFor="Input Amount of Token" className='mt-4'>Business Name</label>
                                 <input className='border-2 rounded-md border-black' required type="text" id="businessName" value={businessName} onChange={(e) => setBusinessName(e.target.value)}></input>
                                 <label htmlFor="Input Product" className='mt-4'>Product</label>
